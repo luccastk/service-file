@@ -13,7 +13,7 @@ class ProductSerializer(serializers.Serializer):
 class ResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()
     timeStamp = serializers.DateTimeField()
-    data = ProductSerializer(many=True)
+    data = serializers.CharField()
  
 class ErrorResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()

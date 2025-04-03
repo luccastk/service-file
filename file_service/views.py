@@ -1,29 +1,38 @@
+import uuid
 from .presenters.presenters_view import BaseApiView
 from rest_framework.parsers import MultiPartParser
-from .serializers import ProductSerializer
-from .mappers.csv_mapper import ProductCsvMapper
 from .validators.validation import CSVFileValidator
-from .services.convert_csv_service import CSVToDataFrame
+from django.core.files.storage import default_storage
+from .services.kafka_producer import KafkaProducerService
 
+producer = KafkaProducerService()
 class UploadCSVFile(BaseApiView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
         try:
             file = request.FILES.get('file')
-            file = CSVFileValidator(file).validate()
+            CSVFileValidator(file).validate()
+    
+            request_id = str(uuid.uuid4())
 
-            df = CSVToDataFrame(file).parse()
-
-            validated_products = []
-            for index, row in df.iterrows():
-                mapped_data = ProductCsvMapper(row=row).to_nested_dict()
-                serializer = ProductSerializer(data=mapped_data)
-                if serializer.is_valid():
-                    validated_products.append(serializer.validated_data) 
-                else:
-                    return self.error(f'[ERRO line {index+2}]\n{serializer.errors}')
-            return self.sucess(data=sorted(validated_products, key=lambda x: x['name']))
+            file_path = default_storage.save(f"upload/{request_id}_{file.name}", file)
         
+            producer.send(
+                topic='file.upload',
+                value={
+                    "request_id": request_id,
+                    "file_path": file_path
+                },
+                key=request_id
+            )
+
+            payload = {
+                "message": "File receive and Process.",
+                "request_id": request_id
+            }
+
+            return self.sucess(payload)
+
         except ValueError as e:
             return self.error(str(e))
