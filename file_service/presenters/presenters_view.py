@@ -1,5 +1,4 @@
 from rest_framework.views import APIView
-from rest_framework import status
 from .error_presenter import error_response
 from .data_presenter import success_response
 
