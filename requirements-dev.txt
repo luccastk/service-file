@@ -53,6 +53,7 @@ python-dotenv==1.1.0
 python-evtx==0.7.4
 python-multipart==0.0.20
 pytz==2025.2
+pywin32==308
 requests==2.32.3
 ROPGadget==7.5
 rpyc==6.0.1
