@@ -7,7 +7,7 @@ from django.core.files.storage import default_storage
 from .services.kafka_producer import KafkaProducerService
 from django.http import FileResponse
 
-producer = KafkaProducerService()
+producer = None
 class UploadCSVFile(BaseApiView):
     parser_classes = [MultiPartParser]
 
@@ -20,7 +20,7 @@ class UploadCSVFile(BaseApiView):
 
             file_path = default_storage.save(f"upload/{request_id}_{file.name}", file)
         
-            producer.send(
+            producer = KafkaProducerService().send(
                 topic='file.upload',
                 value={
                     "request_id": request_id,
