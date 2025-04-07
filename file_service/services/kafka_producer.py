@@ -1,11 +1,19 @@
 # services/kafka_producer.py
 
+from pathlib import Path
+from dotenv import load_dotenv
 from confluent_kafka import Producer
 import json
 import logging
+import os
 
+dotenv_path = Path(__file__).resolve().parent / ".env.prod"
+
+load_dotenv(dotenv_path)
+
+server = os.environ.get("KAFKA_SERVER")
 class KafkaProducerService:
-    def __init__(self, bootstrap_servers='localhost:9092'):
+    def __init__(self, bootstrap_servers=server):
         self.producer = Producer({
             'bootstrap.servers': bootstrap_servers,
             'linger.ms': 10,

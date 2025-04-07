@@ -1,3 +1,4 @@
+from pathlib import Path
 from django.apps import AppConfig
 from dotenv import load_dotenv
 import threading
@@ -5,7 +6,7 @@ import py_eureka_client.eureka_client as eureka_client
 import atexit 
 import os
 
-dotenv_path = f".env.prod"
+dotenv_path = Path(__file__).resolve().parent / ".env.prod"
 
 load_dotenv(dotenv_path)
 
