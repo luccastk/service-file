@@ -6,7 +6,7 @@ import py_eureka_client.eureka_client as eureka_client
 import atexit 
 import os
 
-dotenv_path = Path(__file__).resolve().parent / ".env.prod"
+dotenv_path = Path(__file__).resolve().parent / ".env.dev"
 
 load_dotenv(dotenv_path)
 
