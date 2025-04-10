@@ -1,5 +1,7 @@
-venv/
+.idea/
 __pycache__/
+upload/
+venv/
 *.pyc
 *.pyo
 *.pyd

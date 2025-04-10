@@ -21,6 +21,12 @@ class UploadCSVFile(BaseApiView):
             CSVFileValidator(file).validate()
     
             request_id = str(uuid.uuid4())
+            filename = f"{request_id}_{file.name}"
+            file_path = os.path.join("upload", filename)
+
+            with default_storage.open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
         
             KafkaProducerService().send(
                 topic='file.upload',
