@@ -7,7 +7,7 @@ import atexit
 import os
 import traceback
 
-dotenv_path = Path(__file__).resolve().parent / ".env.dev"
+dotenv_path = Path(__file__).resolve().parent / ".env.prod"
 
 load_dotenv(dotenv_path)
 
