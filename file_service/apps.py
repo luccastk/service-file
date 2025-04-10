@@ -5,6 +5,7 @@ import threading
 import py_eureka_client.eureka_client as eureka_client
 import atexit 
 import os
+import traceback
 
 dotenv_path = Path(__file__).resolve().parent / ".env.dev"
 
@@ -25,10 +26,11 @@ class FileServiceConfig(AppConfig):
                     eureka_server=server,
                     app_name=name,
                     instance_port=port,
-                    instance_host=host
+                    instance_host=host,
                 )
             except Exception as e:
                 print("Register failed: ", e)
+                traceback.print_exc()
 
         threading.Thread(target=register_with_eureka, daemon=True).start()
 

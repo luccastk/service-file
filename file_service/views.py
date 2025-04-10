@@ -13,24 +13,26 @@ class UploadCSVFile(BaseApiView):
     def post(self, request):
         try:
             file = request.FILES.get('file')
+            storeId = request.POST.get('storeId')
+
+            if not storeId:
+                raise ValueError('Id da loja obrigatório.')
+
             CSVFileValidator(file).validate()
     
             request_id = str(uuid.uuid4())
-
-            file_path = default_storage.save(f"upload/{request_id}_{file.name}", file)
         
             KafkaProducerService().send(
                 topic='file.upload',
                 value={
                     "request_id": request_id,
-                    "path": file_path
+                    "storeId": storeId
                 },
                 key=request_id
             )
 
             payload = {
-                "message": "File receive and Process.",
-                "request_id": request_id
+                "File receive and Process."
             }
 
             return self.sucess(payload)
